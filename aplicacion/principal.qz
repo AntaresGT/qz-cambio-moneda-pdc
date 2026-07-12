@@ -1,0 +1,3 @@
+// Archivo principal de qz-cambio-moneda-pdc
+
+consola.mostrar("¡Hola desde Quetzal!")

@@ -1,0 +1,9 @@
+{
+  "version": "0.1.0",
+  "aplicacion": "qz-cambio-moneda-pdc",
+  "entrada": "aplicacion/principal.qz",
+  "tipo": "aplicacion",
+  "quetzal": "0.0.2",
+  "dependencias": {},
+  "permisos": {}
+}
