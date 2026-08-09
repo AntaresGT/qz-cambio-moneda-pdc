@@ -5,5 +5,20 @@
   "tipo": "aplicacion",
   "quetzal": "0.0.2",
   "dependencias": {},
-  "permisos": {}
+  "permisos": [
+    {
+      "tipo": "red",
+      "habilitado": true
+    },
+    {
+      "tipo": "sistema-archivos",
+      "habilitado": true,
+      "directorios": [
+        {
+          "ruta": "./publico",
+          "permiso": "lectura"
+        }
+      ]
+    }
+  ]
 }

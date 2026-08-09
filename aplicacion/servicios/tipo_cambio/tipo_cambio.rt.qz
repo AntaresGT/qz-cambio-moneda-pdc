@@ -1,0 +1,28 @@
+importar {
+    Enrutador
+} desde "quetzal/red"
+importar {
+    tipocambioct
+} desde "./tipo_cambio.ct.qz"
+
+objeto TipoCambioRt {
+    privado:
+        Enrutador m_enrutador = nuevo Enrutador()
+    publico:
+        TipoCambioRt(){
+            esto.inicializar()
+        }
+        vacio inicializar(){
+            esto.m_enrutador.obtener("/tipo-cambio", tipocambioct.obtener_tipo_cambio)
+        }
+
+        Enrutador obtener_enrutador(){
+            retornar esto.m_enrutador
+        }
+}
+
+TipoCambioRt tipocambiort = nuevo TipoCambioRt()
+
+exportar {
+    tipocambiort
+}

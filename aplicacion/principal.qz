@@ -1,3 +1,19 @@
-// Archivo principal de qz-cambio-moneda-pdc
+importar {
+    ServidorHttp,
+    RespuestaHttp
+} desde "quetzal/red"
+importar {
+    tipocambiort
+} desde "./servicios/tipo_cambio/tipo_cambio.rt.qz"
 
-consola.mostrar("¡Hola desde Quetzal!")
+ServidorHttp servidor = nuevo ServidorHttp()
+
+servidor.estaticos("./publico")
+
+// API para el tipo de cambio
+servidor.usar("/api", tipocambiort.obtener_enrutador())
+
+servidor.escuchar(3000)
+consola.mostrar("Servidor corriendo en http://localhost:3000")
+
+

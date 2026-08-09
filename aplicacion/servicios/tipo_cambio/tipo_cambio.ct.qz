@@ -1,0 +1,64 @@
+importar {
+    ClienteHttp,
+    PeticionEntrante,
+    RespuestaSaliente,
+    RespuestaHttp
+} desde "quetzal/red"
+importar { ExpresionRegular } desde "quetzal/motor"
+
+objeto TipoCambioCt {
+    privado:
+        texto CUERPO_SOAP = "<?xml version=\"1.0\" encoding=\"utf-8\"?>
+        <soap:Envelope
+          xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+          xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+          xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">
+          <soap:Body>
+            <TipoCambioDia
+              xmlns=\"http://www.banguat.gob.gt/variables/ws/\" />
+          </soap:Body>
+        </soap:Envelope>"
+        
+        ClienteHttp m_cliente = nuevo ClienteHttp({
+            base_url: "https://www.banguat.gob.gt/variables/ws/TipoCambio.asmx",
+            cabeceras: {
+                "Content-Type": "text/xml; charset=utf-8",
+                SOAPAction: "\"http://www.banguat.gob.gt/variables/ws/TipoCambioDia\"",
+            }
+        })
+
+        asincrono número obtener_tipo_cambio_banguat(){
+            RespuestaHttp respuesta = esperar esto.m_cliente.publicar_asincrono("/", esto.CUERPO_SOAP)
+            texto contenido_respuesta = respuesta.datos()
+            // Extraer el número que está en medio de la etiqueta <referencia> con una expresión regular
+            ExpresionRegular expresion_numero = nuevo ExpresionRegular("<referencia[^>]*>([\\s\\S]*?)<\\/referencia>")
+            texto numero_con_referencia = expresion_numero.buscar(contenido_respuesta)
+            // Extraer solo el número
+            ExpresionRegular expresion_numero_solo = nuevo ExpresionRegular("(\\d+\\.\\d+)")
+            número tipo_cambio = expresion_numero_solo.buscar(numero_con_referencia).numero()
+            retornar tipo_cambio
+        }
+
+    publico:
+        asincrono vacio obtener_tipo_cambio(PeticionEntrante peticion, RespuestaSaliente respuesta) {
+            intentar {
+                número tipo_cambio = esperar esto.obtener_tipo_cambio_banguat()
+                respuesta.estado(200).jsn({
+                    "tipo_cambio": tipo_cambio
+                })
+            }
+            capturar (excepcion e) {
+                respuesta.estado(500).jsn({
+                    "error": e.mensaje
+                })
+            }
+        }
+    
+}
+
+TipoCambioCt tipocambioct = nuevo TipoCambioCt()
+
+exportar {
+    tipocambioct
+}
+
