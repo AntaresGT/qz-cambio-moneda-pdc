@@ -29,7 +29,6 @@ COPY --from=binario /usr/local/bin/quetzal /usr/local/bin/quetzal
 
 WORKDIR /app
 COPY --chown=quetzal:quetzal . .
-RUN chmod +x /app/entrypoint.sh
 
 USER quetzal
 
