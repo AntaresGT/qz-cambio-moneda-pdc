@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: http://tipo-cambio.lenguaje-quetzal.com/sitemap.xml

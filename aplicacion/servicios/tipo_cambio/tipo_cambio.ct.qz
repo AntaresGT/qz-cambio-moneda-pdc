@@ -4,7 +4,9 @@ importar {
     RespuestaSaliente,
     RespuestaHttp
 } desde "quetzal/red"
+importar { Tiempo } desde "quetzal/tiempo"
 importar { ExpresionRegular } desde "quetzal/motor"
+importar { Matemática } desde "quetzal/matemática"
 
 objeto TipoCambioCt {
     privado:
@@ -44,12 +46,46 @@ objeto TipoCambioCt {
             intentar {
                 número tipo_cambio = esperar esto.obtener_tipo_cambio_banguat()
                 respuesta.estado(200).jsn({
-                    "tipo_cambio": tipo_cambio
+                    "estado": "exito",
+                    "fuente": "banguat",
+                    "fecha_consulta": Tiempo.ahora_en("America/Guatemala").texto(),
+                    "tipo_cambio": tipo_cambio,
+                    moneda_origen: "USD",
+                    moneda_destino: "GTQ"
                 })
             }
             capturar (excepcion e) {
+                consola.mostrar_error(e)
                 respuesta.estado(500).jsn({
-                    "error": e.mensaje
+                    estado: "error",
+                    error: "Error al consultar el tipo de cambio, intente nuevamente.",
+                    fecha_consulta: Tiempo.ahora_en("America/Guatemala").texto()
+                })
+            }
+        }
+
+        asincrono vacio consulta_tipo_cambio(PeticionEntrante peticion, RespuestaSaliente respuesta){
+            intentar {
+                jsn datos = peticion.cuerpo()
+                número tipo_cambio = esperar esto.obtener_tipo_cambio_banguat()
+                número conversion_tipo_cambio = Matemática.redondear(tipo_cambio / datos.valor_dolares, 5)
+                
+                respuesta.estado(200).jsn({
+                    "estado": "exito",
+                    "fuente": "banguat",
+                    "fecha_consulta": Tiempo.ahora_en("America/Guatemala").texto(),
+                    "tipo_cambio": tipo_cambio,
+                    "valor_conversion": conversion_tipo_cambio,
+                    moneda_origen: "USD",
+                    moneda_destino: "GTQ"
+                })
+            }
+            capturar (excepcion e) {
+                consola.mostrar_error(e)
+                respuesta.estado(500).jsn({
+                    estado: "error",
+                    error: "Error al consultar el tipo de cambio, intente nuevamente.",
+                    fecha_consulta: Tiempo.ahora_en("America/Guatemala").texto()
                 })
             }
         }
