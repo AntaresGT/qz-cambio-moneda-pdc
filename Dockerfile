@@ -1,7 +1,9 @@
 # syntax=docker/dockerfile:1
 
+# El binario quetzal-ubuntu exige GLIBC_2.39 → Ubuntu 24.04 (noble)
+
 # --- Descargar binario (no queda en la imagen final) ---
-FROM debian:bookworm-slim AS binario
+FROM ubuntu:24.04 AS binario
 
 ARG QUETZAL_VERSION=v0.0.2
 ARG QUETZAL_URL=https://github.com/AntaresGT/lenguaje-quetzal/releases/download/${QUETZAL_VERSION}/quetzal-ubuntu
@@ -12,8 +14,10 @@ RUN apt-get update \
     && chmod +x /usr/local/bin/quetzal \
     && rm -rf /var/lib/apt/lists/*
 
-# --- Runtime mínimo (glibc + CA para HTTPS a Banguat) ---
-FROM debian:bookworm-slim
+# --- Runtime (mismas libs que el build de la release) ---
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates \
