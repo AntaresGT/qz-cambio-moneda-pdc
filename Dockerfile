@@ -21,7 +21,7 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates socat \
+    && apt-get install -y --no-install-recommends ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --create-home --uid 10001 --shell /usr/sbin/nologin quetzal
 
@@ -33,7 +33,6 @@ RUN chmod +x /app/entrypoint.sh
 
 USER quetzal
 
-# Puerto que debe usar Dokploy (Container Port)
 EXPOSE 3000
 
-CMD ["/app/entrypoint.sh"]
+CMD ["quetzal", "ejecutar"]
