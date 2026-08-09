@@ -32,6 +32,6 @@ COPY --chown=quetzal:quetzal . .
 
 USER quetzal
 
-EXPOSE 3000
+EXPOSE 5000
 
 CMD ["quetzal", "ejecutar"]
