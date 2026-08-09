@@ -1,0 +1,9 @@
+.git
+.gitattributes
+.gitignore
+.quetzal
+*.md
+Dockerfile
+.dockerignore
+.env
+.env.*
