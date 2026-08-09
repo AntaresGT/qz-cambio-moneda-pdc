@@ -1,1 +1,2 @@
 **.qz linguist-language=Quetzal
+entrypoint.sh text eol=lf

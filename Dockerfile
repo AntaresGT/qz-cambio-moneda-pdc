@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # El binario quetzal-ubuntu exige GLIBC_2.39 → Ubuntu 24.04 (noble)
+# Quetzal 0.0.2 solo escucha en 127.0.0.1 → socat publica 0.0.0.0:3000
 
 # --- Descargar binario (no queda en la imagen final) ---
 FROM ubuntu:24.04 AS binario
@@ -14,13 +15,13 @@ RUN apt-get update \
     && chmod +x /usr/local/bin/quetzal \
     && rm -rf /var/lib/apt/lists/*
 
-# --- Runtime (mismas libs que el build de la release) ---
+# --- Runtime ---
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates \
+    && apt-get install -y --no-install-recommends ca-certificates socat \
     && rm -rf /var/lib/apt/lists/* \
     && useradd --create-home --uid 10001 --shell /usr/sbin/nologin quetzal
 
@@ -28,9 +29,11 @@ COPY --from=binario /usr/local/bin/quetzal /usr/local/bin/quetzal
 
 WORKDIR /app
 COPY --chown=quetzal:quetzal . .
+RUN chmod +x /app/entrypoint.sh
 
 USER quetzal
 
+# Puerto que debe usar Dokploy (Container Port)
 EXPOSE 3000
 
-CMD ["quetzal", "ejecutar"]
+CMD ["/app/entrypoint.sh"]
