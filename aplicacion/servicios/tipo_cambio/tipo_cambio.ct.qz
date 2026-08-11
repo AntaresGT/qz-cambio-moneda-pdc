@@ -68,7 +68,7 @@ objeto TipoCambioCt {
             intentar {
                 jsn datos = peticion.cuerpo()
                 número tipo_cambio = esperar esto.obtener_tipo_cambio_banguat()
-                número conversion_tipo_cambio = Matemática.redondear(tipo_cambio / datos.valor_dolares, 5)
+                número conversion_tipo_cambio = Matemática.redondear(tipo_cambio * datos.valor_dolares, 5)
                 
                 respuesta.estado(200).jsn({
                     "estado": "exito",
